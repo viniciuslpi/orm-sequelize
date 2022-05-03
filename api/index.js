@@ -10,9 +10,9 @@
  app.get('/teste', (req, res) => {
      res
      .status(200)
-     .send({ message: 'Boas vindas a api!'})
+     .send({ message: 'Welcome to my API!'})
  })
 
- app.listen(port, () => console.log(`Servidor ativo na porta http://localhost:3000`))
+ app.listen(port, () => console.log(`Server running at http://localhost:3000`))
 
  module.exports = app;
