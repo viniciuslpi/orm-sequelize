@@ -31,6 +31,28 @@ class PessoaController {
         }
     }
 
+    static async atualizarPessoa(req, res) {
+        const dadosPessoa = req.body;
+        const { id } = req.params;
+        try {
+            await database.Pessoas.update(dadosPessoa, { where: { id: Number(id) }});
+            const pessoaAtualizada = await database.Pessoas.findOne( { where: { id: Number(id) }});
+            return res.status(200).json(pessoaAtualizada);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async apagaPessoa(req, res) {
+        const { id } = req.params;
+        try {
+            await database.Pessoas.destroy({ where: { id: Number(id) }});
+            return res.status(200).json({ message: `O id ${id} foi apagado com sucesso.`});
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
 }
 
 module.exports = PessoaController;
