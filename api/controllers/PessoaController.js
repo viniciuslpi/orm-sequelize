@@ -74,6 +74,34 @@ class PessoaController {
         }
     }
 
+    static async criarMatricula(req, res) {
+        const { estudanteId } = req.params;
+        const dadosMatricula = { ...req.body, estudante_id: Number(estudanteId) };
+
+        try {
+            const matricula = await database.Matricula.create(dadosMatricula);
+            return res.status(200).json(matricula);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
+    static async atualizarMatricula(req, res) {
+        const { estudanteId, matriculaId } = req.params;
+        const dadosMatricula = req.body;
+     
+        try {
+            await database.Matricula.update(dadosMatricula, 
+                { where: { 
+                    id: Number(matriculaId), 
+                    estudante_id: Number(estudanteId) 
+                }});
+            const matriculaAtualizada = await database.Matricula.findOne({ where: { id: Number(matriculaId) } });
+            return res.status(200).json(matriculaAtualizada);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
 
 
 
