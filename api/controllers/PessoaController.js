@@ -103,6 +103,16 @@ class PessoaController {
         }
     }
 
+    static async apagaMatricula(req, res) {
+        const { estudanteId, matriculaId } = req.params;
+        try {
+            await database.Matricula.destroy({ where: { id: Number(matriculaId) } });
+            return res.status(200).json({ message: `O id ${matriculaId} foi apagado com sucesso.` });
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+    }
+
 
 
 }
