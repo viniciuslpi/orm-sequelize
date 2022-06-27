@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
 
-      Pessoas.hasMany(models.Turma, { 
+      Pessoas.hasMany(models.Turma, {
         foreignKey: 'docente_id'
       });
       Pessoas.hasMany(models.Matricula, {
@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       });
 
     }
-  
+
   }
-  
+
   Pessoas.init({
     nome: DataTypes.STRING,
     ativo: DataTypes.BOOLEAN,
@@ -30,9 +30,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Pessoas',
-    paranoid: true
+    paranoid: true,
+    defaultScope: { where: { ativo: true } },
+    scopes: { todos: { where: {} }}
   });
-  
+
   return Pessoas;
 
 };
