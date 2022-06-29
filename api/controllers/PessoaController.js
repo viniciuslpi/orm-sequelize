@@ -4,9 +4,7 @@ class PessoaController {
 
     static async pegaPessoasAtivas(req, res) {
         try {
-            const pessoasAtivas = await database.Pessoas.findAll({
-                limit: 2
-            });
+            const pessoasAtivas = await database.Pessoas.findAll();
             return res.status(200).json(pessoasAtivas);
         } catch (error) {
             return res.status(500).json(error.message);
