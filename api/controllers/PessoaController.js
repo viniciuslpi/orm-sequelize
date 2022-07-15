@@ -156,7 +156,7 @@ class PessoaController {
         try {
             const pessoa = await database.Pessoas
                 .findOne(
-                    { where: {id: Number(estudanteId)}}
+                    { where: { id: Number(estudanteId) } }
                 );
             const matriculas = await pessoa.getAulasMatriculadas()
 
@@ -170,15 +170,15 @@ class PessoaController {
         const { turmaId } = req.params;
         try {
             const todasAsMatriculas = await database.Matricula
-            .findAndCountAll({
-                where: {
-                    turma_id: Number(turmaId),
-                    status: 'confirmado'
-                },
-                limit: 20,
-                order: [[ 'estudante_id', 'ASC']]
+                .findAndCountAll({
+                    where: {
+                        turma_id: Number(turmaId),
+                        status: 'confirmado'
+                    },
+                    limit: 20,
+                    order: [['estudante_id', 'ASC']]
 
-            })
+                })
             return res.status(200).json(todasAsMatriculas);
         } catch (error) {
             return res.status(500).json(error.message);
@@ -189,7 +189,7 @@ class PessoaController {
         const lotacaoTurma = 2;
         try {
             const turmasLotadas = await database.Matricula
-                .findAndCountAll({ 
+                .findAndCountAll({
                     where: {
                         status: 'confirmado'
                     },
@@ -207,14 +207,20 @@ class PessoaController {
     static async cancelaPessoa(req, res) {
         const { estudanteId } = req.params;
         try {
-            await database.Pessoas.update(
-                { ativo: false }, 
-                { where: { id: Number(estudanteId) }})
-            
-            await database.Matricula.update(
-                { status: 'cancelado'}, 
-                { where: { estudante_id: Number(estudanteId) }})
-                return res.status(200).json({ message: `matriculas do estudante ${estudanteId} canceladas`});
+
+            database.sequelize.transaction(async transacao => {
+                await database.Pessoas.update(
+                    { ativo: false },
+                    { where: { id: Number(estudanteId) } },
+                    { transaction: transacao })
+
+                await database.Matricula.update(
+                    { status: 'cancelado' },
+                    { where: { estudante_id: Number(estudanteId) } },
+                    { transaction: transacao });
+                return res.status(200).json({ message: `matriculas do estudante ${estudanteId} canceladas` })
+            })
+
         } catch (error) {
             return res.status(500).json(error.message);
         }
